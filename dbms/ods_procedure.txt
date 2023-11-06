@@ -1,0 +1,62 @@
+
+procedures:
+1) 
+CREATE PROCEDURE InsertOrder (IN cust_id INT, IN order_id INT)
+BEGIN
+  DECLARE delivery_status VARCHAR(25);
+  DECLARE created_At DATE;
+  DECLARE dboy_ID INT;
+
+#   -- You can set appropriate values for delivery_status, created_At, and dboy_ID here
+  SET delivery_status = 'Pending';
+  SET created_At = CURDATE(); 
+#   -- Use the current date
+  SET dboy_ID = NULL;
+#   -- You may set a default delivery boy ID or NULL
+
+  INSERT INTO Orders (order_Id, delivery_status, created_At, cust_Id, dboy_ID)
+  VALUES (order_id, delivery_status, created_At, cust_id, dboy_ID);
+END;
+/
+
+CALL InsertOrder(1, 1);
+
+output: 
+mysql> CALL InsertOrder(2,8);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> 
+
+
+2. 
+DELIMITER //
+
+CREATE FUNCTION GetDeliveryStatus(order_id_param INT)
+RETURNS VARCHAR(25)
+DETERMINISTIC
+BEGIN
+  DECLARE status VARCHAR(25);
+
+  SELECT delivery_status INTO status
+  FROM Orders
+  WHERE order_Id = order_id_param;
+
+  RETURN status;
+END;
+//
+
+DELIMITER ;
+
+
+
+output:
+mysql> SELECT GetDeliveryStatus(1);
++----------------------+
+| GetDeliveryStatus(1) |
++----------------------+
+| Pending              |
++----------------------+
+1 row in set (0.01 sec)
+
+mysql> 
+

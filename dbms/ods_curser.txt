@@ -1,0 +1,71 @@
+curser:
+DELIMITER //
+CREATE FUNCTION GetPaymentsStatus(p_order_id INT) RETURNS VARCHAR(25) DETERMINISTIC
+BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE paymentStatus VARCHAR(25);
+  DECLARE a VARCHAR(25);
+
+  -- Declare a cursor to fetch payment_status for the given order
+  DECLARE cur1 CURSOR FOR 
+    SELECT payment_status FROM `Payments` WHERE order_Id = p_order_id;
+
+  -- Declare a CONTINUE HANDLER for the cursor
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+  
+   
+
+  -- Open the cursor
+  OPEN cur1;
+
+  -- Initialize the paymentStatus variable
+  SET paymentStatus = 'Paid';
+  
+ read_loop: LOOP
+ 	
+    FETCH cur1 INTO a;
+		IF done = TRUE THEN
+      LEAVE read_loop;
+    END IF;
+    IF a !='Paid' THEN
+    	SET paymentStatus = 'Not Paid';
+    	LEAVE read_loop;
+    END IF;
+
+  END LOOP;
+  
+  CLOSE cur1;
+
+  RETURN paymentStatus;
+END//
+DELIMITER ;
+
+
+output:
+
+mysql> select GetPaymentsStatus(2);
++----------------------+
+| GetPaymentsStatus(2) |
++----------------------+
+| Not Paid             |
++----------------------+
+1 row in set (0.00 sec)
+
+mysql> select GetPaymentsStatus(3);
++----------------------+
+| GetPaymentsStatus(3) |
++----------------------+
+| Not Paid             |
++----------------------+
+1 row in set (0.00 sec)
+
+mysql> select GetPaymentsStatus(1);
++----------------------+
+| GetPaymentsStatus(1) |
++----------------------+
+| Paid                 |
++----------------------+
+1 row in set (0.01 sec)
+
+mysql> 
+ 

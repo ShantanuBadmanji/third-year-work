@@ -1,0 +1,82 @@
+
+CREATE TABLE Customers
+(
+  cust_Id INT NOT NULL,
+  name VARCHAR(25) NOT NULL,
+  house_NO INT NOT NULL,
+  street_name VARCHAR(25) NOT NULL,
+  city VARCHAR(25) NOT NULL,
+  pincode INT NOT NULL,
+  PRIMARY KEY (cust_Id)
+);
+
+CREATE TABLE Products
+(
+  product_Id INT NOT NULL,
+  name VARCHAR(25) NOT NULL,
+  prize_in_rs INT NOT NULL,
+  stock INT NOT NULL,
+  details VARCHAR(50) NOT NULL,
+  PRIMARY KEY (product_Id)
+);
+
+CREATE TABLE contact_info
+(
+  phone_NO INT NOT NULL,
+  cust_Id INT NOT NULL,
+  PRIMARY KEY (cust_Id),
+  FOREIGN KEY (cust_Id) REFERENCES Customers(cust_Id)
+);
+
+CREATE TABLE staff
+(
+  staff_ID INT NOT NULL,
+  manager_ID INT NOT NULL,
+  PRIMARY KEY (staff_ID),
+  FOREIGN KEY (manager_ID) REFERENCES staff(staff_ID)
+);
+
+CREATE TABLE Delivery_Boys
+(
+  dboy_ID INT NOT NULL,
+  name VARCHAR(25) NOT NULL,
+  carry_capacity INT NOT NULL,
+  phone_NO INT NOT NULL,
+  manager_ID INT NOT NULL,
+  PRIMARY KEY (dboy_ID),
+  FOREIGN KEY (manager_ID) REFERENCES staff(staff_ID)
+);
+
+CREATE TABLE Orders
+(
+  order_Id INT NOT NULL,
+  delivery_status VARCHAR(25) NOT NULL,
+  created_At DATE NOT NULL,
+  cust_Id INT NOT NULL,
+  dboy_ID INT NOT NULL,
+  PRIMARY KEY (order_Id),
+  FOREIGN KEY (cust_Id) REFERENCES Customers(cust_Id),
+  FOREIGN KEY (dboy_ID) REFERENCES Delivery_Boys(dboy_ID)
+);
+
+CREATE TABLE Payments
+(
+  payment_Id INT NOT NULL,
+  amount INT NOT NULL,
+  payment_status VARCHAR(25) NOT NULL,
+  order_Id INT NOT NULL,
+  PRIMARY KEY (payment_Id, order_Id),
+  FOREIGN KEY (order_Id) REFERENCES Orders(order_Id)
+);
+
+
+CREATE TABLE order_products
+(
+  count INT NOT NULL,
+  product_Id INT NOT NULL,
+  order_Id INT NOT NULL,
+  PRIMARY KEY (product_Id, order_Id),
+  FOREIGN KEY (product_Id) REFERENCES Products(product_Id),
+  FOREIGN KEY (order_Id) REFERENCES Orders(order_Id)
+);
+
