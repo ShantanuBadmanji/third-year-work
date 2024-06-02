@@ -1,0 +1,31 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(45deg, #c20b8b, #4c00ff);
+}
+
+
+h1 {
+    color: white;
+    text-align: center;
+}
+
+label {
+    font-size: 24px;
+}
+
+.textArea {
+    background: #403d84;
+    color: #fff;
+    border: 0;
+    outline: 0;
+}
+
+.textArea::placeholder {
+    font-size: 16px;
+    color: #ddd;
+}
+
+#my-chart {
+    background-color: white !important;
+    border-radius: 5px !important;
+}
