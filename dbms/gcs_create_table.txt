@@ -1,0 +1,92 @@
+CREATE TABLE `ADMIN` (
+  id int unsigned PRIMARY KEY AUTO_INCREMENT ,
+  username varchar(50) not null unique,
+  name varchar(50),
+  password varchar(50)
+);
+  
+CREATE TABLE `EMPLOYEE` (
+  id int unsigned PRIMARY KEY AUTO_INCREMENT ,
+  username varchar(50) not null unique,
+  name varchar(50),
+  userpassword varchar(50),
+  capacity_kg int unsigned,
+  contact_info VARCHAR(12) 
+  CONSTRAINT CHECK_PHONE CHECK (contact_info REGEXP '[0-9]{10,11}')
+);
+
+CREATE TABLE `USER` (
+  id int unsigned PRIMARY KEY AUTO_INCREMENT ,
+  username varchar(50) not null unique,
+  name varchar(50),
+  userpassword varchar(50)
+);
+
+create table `WASTE_TYPE`(
+    id tinyint unsigned primary key AUTO_INCREMENT,
+    type_name varchar(50) not null unique
+);
+     	
+
+# drop table COMPLAINT_STATUS;
+# create table COMPLAINT_STATUS(
+#    id tinyint primary key,
+#    status_name varchar(50) not null unique
+# );
+
+CREATE TABLE COMPLAINT (
+  id  INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  token varchar(100) unique not null,
+  created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+  wastetype_id tinyint  unsigned,
+  current_status ENUM("pending","assigned","rejected","completed") DEFAULT "pending",
+  user_id int unsigned,
+  emp_id int unsigned, 
+  FOREIGN KEY (emp_id) REFERENCES EMPLOYEE(id)ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES USER(id) ON DELETE SET NULL ON UPDATE CASCADE,
+	FOREIGN key (wastetype_id) REFERENCES WASTE_TYPE(id) ON DELETE SET NULL ON UPDATE CASCADE
+ );
+  
+# TRUNCATE table `BEFORE_IMAGE`;  
+CREATE TABLE BEFORE_IMAGE (
+  id tinyint unsigned,
+  complaint_id INT UNSIGNED ,
+  url varchar(500),
+  PRIMARY KEY (id,complaint_id),
+  FOREIGN KEY (complaint_id) REFERENCES COMPLAINT(id) ON DELETE CASCADE on UPDATE CASCADE
+  );
+  
+  CREATE TABLE AFTER_IMAGE (
+  id tinyint unsigned,
+  complaint_id INT UNSIGNED,
+  url varchar(500),
+  PRIMARY KEY (id,complaint_id),
+  FOREIGN KEY (complaint_id) REFERENCES COMPLAINT(id) ON DELETE CASCADE on UPDATE CASCADE
+  );
+
+CREATE TABLE `GPS_LOCATION` (
+  complaint_id INT UNSIGNED PRIMARY KEY,
+  area VARCHAR (25),
+	address varchar(100),
+  city varchar(50),
+  longitude float,
+  latitude float,
+  FOREIGN KEY (complaint_id) REFERENCES COMPLAINT(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+  
+  
+  Alter table `ADMIN` AUTO_INCREMENT = 2001;
+  Alter table `EMPLOYEE` AUTO_INCREMENT = 4501;
+  Alter table `USER` AUTO_INCREMENT = 18001;
+  Alter table `WASTE_TYPE` AUTO_INCREMENT = 81;
+  
+  ALTER table `USER` rename COLUMN userpassword to password;
+	ALTER table `ADMIN` rename COLUMN userpassword to password;
+	ALTER table `EMPLOYEE` rename COLUMN userpassword to password;
+  
+  
+  
+
+insert into `WASTE_TYPE` (type_name)
+values ("e-waste"),("bio-waste"),("bio-medical"),("construction-waste"),("hazardous-waste");
+
